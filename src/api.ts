@@ -3,12 +3,14 @@ import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 
 const jar = new CookieJar();
-const client = wrapper(axios.create({ jar }));
+export const client = wrapper(axios.create({ jar }));
 
 const loginInfo = new URLSearchParams({
   UserName: process.env.USER_NAME ?? "",
   Password: process.env.PASSWORD ?? "",
 }).toString();
+
+console.log(loginInfo);
 
 export let accessToken = "";
 
