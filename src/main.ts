@@ -1,22 +1,21 @@
-import inquirer from "inquirer";
+import * as dotenv from "dotenv";
+dotenv.config();
+import prompts from "prompts";
+import { login } from "./api";
+import { getShit } from "./matrix";
+dotenv.config();
 
-const questions = [
-    {
-        type: "editor",
-        
+const main = async () => {
+  await login();
+  const shit = await getShit();
+  console.log(shit);
+  // const response = await prompts({
+  //   type: "number",
+  //   name: "value",
+  //   message: "How old are you?",
+  //   validate: (value) => (value < 18 ? `Nightclub is 18+ only` : true),
+  // });
+  // console.log(response); // => { value: 24 }
+};
 
-
-        name: "bio",
-        message: "Please write a short bio of at least 3 lines",
-        validate(text: string) {
-            if (text.split("\n").length < 3) {
-                return "Must be at least 3 lines.";
-            }
-            return true;
-        },
-    },
-];
-
-inquirer.prompt(questions).then((answers) => {
-    console.log(JSON.stringify(answers, null, " "));
-});
+main().catch(console.error);
