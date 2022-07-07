@@ -7,7 +7,7 @@
     "test": "fusion",
     "build": "npx tsc",
     "start:dev": "nodemon ./src/main.ts",
-    "start": "node ./build/matrix.js"
+    "start": "node ./build/main.js"
   },
   "author": "B. Alio",
   "license": "ISC",

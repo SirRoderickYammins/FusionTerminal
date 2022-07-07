@@ -1,36 +1,14 @@
 import axios from "axios";
-import { accessToken, client } from "./api";
+import { accessToken } from "./api";
 import { format, addDays } from "date-fns";
+import { Schedule, Session } from "./types/sessionTypes";
 
 const startTime = format(new Date(), "yyyy-MM-dd'T'04:00:00");
 const endTime = format(addDays(new Date(), 1), "yyyy-MM-dd'T'03:00:00");
 
-type Student = {
-  firstName: string;
-  lastName: string;
-  userId: number;
-  studentHashKey: string;
-};
-
-type Session = {
-  teacherHashKey: string;
-  hashKey: string;
-  sessionType: string;
-  sessionNumber: number;
-  students: Student[];
-  appointmentStyle: "renderedStudentAbsent" | "renderedTaught";
-};
-
-type TodaysSchedule = {
-  userId: number;
-  firstName: string;
-  lastName: string;
-  sessions: Session[];
-};
-
-export const getTodaysSchedule = (): Promise<TodaysSchedule> => {
+export const getTodaysSchedule = (): Promise<Schedule> => {
   return new Promise((resolve, reject) => {
-    client
+    axios
       .get(
         `https://matrix-api.fusionacademy.com/api/TodaysSchedule?=&campusId=50&startTime=${startTime}&endTime=${endTime}`,
         {
@@ -68,8 +46,7 @@ export const setSessionStatus = (session: Session, status: boolean) => {
         },
       ],
     };
-
-    client
+    axios
       .post(
         "https://matrix.fusionacademy.com/api/Schedule/UpdateSessionStatus",
         body,
@@ -77,16 +54,16 @@ export const setSessionStatus = (session: Session, status: boolean) => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-          withCredentials: true,
         }
       )
       .then((res) => {
-        // console.log("status", res.status);
-        console.log("test", res.data);
+        console.log(res.data.message);
         resolve(res.data.message);
       })
       .catch((err) => {
-        console.log("An error has occurred processing your status update.");
+        console.log(
+          "An error has occurred processing your status update, faggot."
+        );
         reject("Error.");
       });
   });
