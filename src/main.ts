@@ -3,6 +3,9 @@ import inquirer from "inquirer";
 const questions = [
     {
         type: "editor",
+        
+
+
         name: "bio",
         message: "Please write a short bio of at least 3 lines",
         validate(text: string) {
