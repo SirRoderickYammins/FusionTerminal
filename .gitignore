@@ -1,5 +1,4 @@
-config.env
+.env
 package-lock.json
-build/matrix.js
-build/main.js
+build/
 node_modules
