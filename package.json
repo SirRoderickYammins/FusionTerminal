@@ -1,0 +1,16 @@
+{
+  "name": "fusionterminal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "test": "fusion"
+  },
+  "author": "B. Alio",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/inquirer": "^8.2.1",
+    "@types/node": "^18.0.3"
+  }
+}
