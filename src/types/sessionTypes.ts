@@ -84,5 +84,9 @@ export type UserInformation = {
   earnedPlanningTime: {
     planningTimeBalanceMinutes: number;
     usedPlanningTimeMinutes: number;
-  },
+  };
+};
+
+export type BookingInformation = {
+  reservations: Array<any>;
 };
