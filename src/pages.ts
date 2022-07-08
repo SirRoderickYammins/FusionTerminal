@@ -2,9 +2,14 @@ import { initialActionSelect } from "./prompts/initialActionSelect";
 import { getTodaySelection } from "./prompts/getTodaySelect";
 import { getSessionActions } from "./prompts/getSessionActions";
 import { matrixSelectionMenu, planningTimeMenu } from "./prompts/matrixActions";
-import { getCurrentUser, getTodaysSchedule, getUserHours, setSessionStatus } from "./matrix";
+import {
+  getCurrentUser,
+  getTodaysSchedule,
+  getUserHours,
+  setSessionStatus,
+} from "./matrix";
 import { Session, CampusHashKey } from "./types/sessionTypes";
-
+import { PlanningTimeBalance } from "./api";
 
 export const PAGES = {
   homepage: async () => {
@@ -14,30 +19,40 @@ export const PAGES = {
       PAGES.matrixActionsList();
     }
   },
-  planningTimeMenu: async () => {
-    console.clear();
-    
 
+  planningTimeMatrix: async () => {
+    console.clear();
+    const res = await planningTimeMenu();
+    switch (res.PlanningTimeSelection) {
+      case "viewPlanTime":
+        console.clear();
+        console.log("Loading planning time. This may take a few seconds.");
+        console.log(
+          `You have ${await PlanningTimeBalance()} minutes of planning time.`
+        );
+        break;
+      case "Automatically Add Planning Time":
+      // TODO: Make planning time function.
+    }
   },
+
   matrixActionsList: async () => {
     console.clear();
     const response = await matrixSelectionMenu();
     switch (response.MatrixActionSelect) {
-        case ("planningTimeSelection"):
-            console.clear();
-            await PAGES.planningTimeMenu();
-            break;
-        case ("todayScheduleSelection"):
-            console.clear();
-            PAGES.todaySchedule();
-            break;
-        case("Return"):
-            console.clear();
-            PAGES.homepage();
-            break;
+      case "planningTimeSelection":
+        console.clear();
+        await PAGES.planningTimeMatrix();
+        break;
+      case "todayScheduleSelection":
+        console.clear();
+        PAGES.todaySchedule();
+        break;
+      case "Return":
+        console.clear();
+        PAGES.homepage();
+        break;
     }
-
-
   },
   todaySchedule: async () => {
     console.clear();
