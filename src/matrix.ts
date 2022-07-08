@@ -1,7 +1,12 @@
 import axios from "axios";
 import { accessToken, client } from "./api";
 import { format, addDays } from "date-fns";
-import { Schedule, Session } from "./types/sessionTypes";
+import {
+  CampusHashKey,
+  Schedule,
+  Session,
+  UserInformation,
+} from "./types/sessionTypes";
 
 const startTime = format(new Date(), "yyyy-MM-dd'T'04:00:00");
 const endTime = format(addDays(new Date(), 1), "yyyy-MM-dd'T'03:00:00");
@@ -63,6 +68,47 @@ export const setSessionStatus = (session: Session, status: boolean) => {
       .catch((err) => {
         console.log("An error has occurred processing your status update.");
         reject("Error.");
+      });
+  });
+};
+
+export const getCurrentUser = (): Promise<CampusHashKey> => {
+  return new Promise((resolve, reject) => {
+    client
+      .get("https://matrix.fusionacademy.com/api/Directory/GetCurrentUser", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        resolve(res.data.defaultCampusHashKey);
+      })
+      .catch((err) => {
+        console.log("An error has occurred.");
+        reject("Error");
+      });
+  });
+};
+
+export const getUserHours = (
+  defaultCampusHashKey: CampusHashKey 
+): Promise<UserInformation> => {
+  return new Promise((resolve, reject) => {
+    client
+      .get(
+        `https://matrix.fusionacademy.com/api/Schedule/GetCurrentUserHud?=&campusHashKey=${defaultCampusHashKey}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data.earnedPlanningTime);
+        resolve(res.data.earnedPlanningTime);
+      })
+      .catch((err) => {
+        reject("Error occurred obtaining planning time.");
       });
   });
 };
