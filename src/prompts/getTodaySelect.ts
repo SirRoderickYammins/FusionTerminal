@@ -1,7 +1,7 @@
 import kleur from "kleur";
 import prompts from "prompts";
 import { Session } from "../types/sessionTypes";
-
+import format from "date-fns/format";
 
 const sessionRenderStatus = (appointmentStatus: string) => {
   if (appointmentStatus == "renderedTaught"){

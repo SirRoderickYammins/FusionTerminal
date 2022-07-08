@@ -18,10 +18,10 @@ export const PAGES = {
     console.log("Loading schedule...");
     const schedule = await getTodaysSchedule();
     console.clear();
-    const campusHashKey = await getCurrentUser();
-    console.log(campusHashKey);
-    const planningTime = await getUserHours(campusHashKey);
-    console.log(planningTime.earnedPlanningTime.planningTimeBalanceMinutes);
+    // const campusHashKey = await getCurrentUser();
+    // console.log(campusHashKey);
+    // const planningTime = await getUserHours(campusHashKey);
+    // console.log(planningTime.earnedPlanningTime.planningTimeBalanceMinutes);
     const response = await getTodaySelection(schedule.sessions);
 
     if (response.sessionSelect === -1) {
