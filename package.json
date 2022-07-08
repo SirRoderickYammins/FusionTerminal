@@ -6,7 +6,7 @@
   "scripts": {
     "test": "fusion",
     "build": "npx tsc",
-    "start:dev": "nodemon ./src/main.ts",
+    "start:dev": "nodemon -I ./src/main.ts",
     "start": "node ./build/main.js"
   },
   "author": "B. Alio",
