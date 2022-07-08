@@ -81,7 +81,7 @@ export const getCurrentUser = (): Promise<CampusHashKey> => {
         },
       })
       .then((res) => {
-        resolve(res.data.defaultCampusHashKey);
+        resolve(res.data);
       })
       .catch((err) => {
         console.log("An error has occurred.");
@@ -91,7 +91,7 @@ export const getCurrentUser = (): Promise<CampusHashKey> => {
 };
 
 export const getUserHours = (
-  defaultCampusHashKey: CampusHashKey 
+  defaultCampusHashKey: string
 ): Promise<UserInformation> => {
   return new Promise((resolve, reject) => {
     client
