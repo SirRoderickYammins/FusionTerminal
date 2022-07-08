@@ -10,8 +10,6 @@ const loginInfo = new URLSearchParams({
   Password: process.env.PASSWORD ?? "",
 }).toString();
 
-console.log(loginInfo);
-
 export let accessToken = "";
 
 export const login = async () => {
