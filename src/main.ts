@@ -34,9 +34,9 @@ const PAGES = {
     console.clear();
     const response = await getSessionActions(session);
     if (response.sessionActions === "attended") {
-      console.log("TODO: Set status true for", session.title);
+      // setSessionStatus(session, true); returns undefined...
     } else if (response.sessionActions === "absent") {
-      console.log("TODO: Set status false for", session.title);
+      // setSessionStatus(session, false);
     } else {
       await PAGES.todaySchedule();
     }
