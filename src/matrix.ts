@@ -1,5 +1,5 @@
 import axios from "axios";
-import { accessToken } from "./api";
+import { accessToken, client } from "./api";
 import { format, addDays } from "date-fns";
 import { Schedule, Session } from "./types/sessionTypes";
 
@@ -46,7 +46,7 @@ export const setSessionStatus = (session: Session, status: boolean) => {
         },
       ],
     };
-    axios
+    client
       .post(
         "https://matrix.fusionacademy.com/api/Schedule/UpdateSessionStatus",
         body,
