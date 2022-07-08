@@ -1,6 +1,8 @@
 import axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
+import { getCurrentUser, getUserHours } from "./matrix";
+import { UserInformation } from "./types/sessionTypes";
 
 const jar = new CookieJar();
 export const client = wrapper(axios.create({ jar }));
@@ -11,7 +13,6 @@ const loginInfo = new URLSearchParams({
 }).toString();
 
 export let accessToken = "";
-
 
 export const login = async () => {
   await client
@@ -26,7 +27,16 @@ export const login = async () => {
     })
     .catch((err) => {
       console.log("Matrix is down.");
+    });
+};
 
-      })
-    };
-
+export const PlanningTimeBalance = async (): Promise<
+  UserInformation["earnedPlanningTime"]["planningTimeBalanceMinutes"]
+> => {
+  const planningTimeMins = await getUserHours(
+    (
+      await getCurrentUser()
+    ).defaultCampusHashKey
+  );
+  return planningTimeMins.earnedPlanningTime.planningTimeBalanceMinutes;
+};
