@@ -1,6 +1,6 @@
 import prompts from "prompts";
 import { Session } from "../types/sessionTypes";
-
+import kleur from "kleur";
 export const getSessionActions = async (session: Session) => {
   return prompts([
     {
@@ -10,12 +10,12 @@ export const getSessionActions = async (session: Session) => {
       hint: session.title,
       choices: [
         {
-          title: "Mark as attended",
+          title: kleur.green("Mark as attended"),
           value: "attended",
         },
         {
-          title: "Mark as unattended",
-          value: "unattended",
+          title: kleur.red("Mark as absent"),
+          value: "absent",
         },
         {
           title: "Go back",

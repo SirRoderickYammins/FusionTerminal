@@ -61,9 +61,7 @@ export const setSessionStatus = (session: Session, status: boolean) => {
         resolve(res.data.message);
       })
       .catch((err) => {
-        console.log(
-          "An error has occurred processing your status update, faggot."
-        );
+        console.log("An error has occurred processing your status update.");
         reject("Error.");
       });
   });

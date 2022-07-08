@@ -1,4 +1,5 @@
 import prompts from "prompts";
+import kleur from "kleur";
 
 export const initialActionSelect = async () =>
   prompts([
@@ -8,14 +9,20 @@ export const initialActionSelect = async () =>
       message: "What do you want to do?",
       choices: [
         {
-          title: "Look at a Schedule",
+          title: kleur.magenta("Matrix"),
           description: "View your schedule and make changes",
           value: "lookSchedule",
         },
         {
-          title: "Look at a Schedule",
-          description: "Blla blla",
+          title: "Salesforce",
+          description: "Session charting",
           value: 2,
+          disabled: true,
+        },
+        {
+          title: "Canvas",
+          description: "Edit Classes and Assignments",
+          value: 3,
           disabled: true,
         },
       ],
