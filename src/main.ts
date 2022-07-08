@@ -34,9 +34,11 @@ const PAGES = {
     console.clear();
     const response = await getSessionActions(session);
     if (response.sessionActions === "attended") {
-      setSessionStatus(session, true);
+      await setSessionStatus(session, true);
+      await PAGES.todaySchedule();
     } else if (response.sessionActions === "absent") {
-      setSessionStatus(session, false);
+      await setSessionStatus(session, false);
+      await PAGES.todaySchedule();
     } else {
       await PAGES.todaySchedule();
     }
