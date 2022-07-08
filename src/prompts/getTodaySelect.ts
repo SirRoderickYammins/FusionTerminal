@@ -22,13 +22,29 @@ export const getTodaySelection = async (sessions: Session[]) => {
       name: "sessionSelect",
       message: "Select the Session You Wish to Edit",
       choices: [
-        ...sessions.map((session, index) => {
-          return {
-            title: `${session.title} [${session.sessionNumber}/${session.sessionCountTotal}]`,
-            description: ` Session Status: ${sessionRenderStatus(session.appointmentStyle)}`,
-            value: index,
-          };
-        }),
+        ...sessions
+          .sort((a, b) => {
+            const aStartTime = new Date(a.startTime);
+            const bStartTime = new Date(b.startTime);
+            return aStartTime.getTime() - bStartTime.getTime();
+          })
+          .map((session, index) => {
+            // Converting the timezone of the date to the one that the campus.iana provides
+            const startTime = new Date(
+              new Date(session.startTime).toLocaleString("en-US", {
+                timeZone: session.series.campus.iana,
+              })
+            );
+            const startTimeFormatted = format(startTime, "HH:mm");
+
+            return {
+              title: `${startTimeFormatted} - ${session.title} [${session.sessionNumber}/${session.sessionCountTotal}] `,
+              description: ` Session Status: ${sessionRenderStatus(
+                session.appointmentStyle
+              )}`,
+              value: index,
+            };
+          }),
         {
           title: "Go back",
           value: -1,
