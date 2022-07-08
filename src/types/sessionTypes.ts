@@ -13,6 +13,7 @@ export type Session = {
   sessionNumber: number;
   students: Student[];
   sessionCountTotal: number;
+  appointmentStyle: string;
 };
 
 export type Schedule = {
