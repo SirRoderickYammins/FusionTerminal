@@ -2,11 +2,13 @@ import axios from "axios";
 import { accessToken, client } from "./api";
 import { format, addDays } from "date-fns";
 import {
+  BookingInformation,
   CampusHashKey,
   Schedule,
   Session,
   UserInformation,
 } from "./types/sessionTypes";
+import { getBookingsRequestsBody } from "./requestbodies/matrixrequests";
 
 const startTime = format(new Date(), "yyyy-MM-dd'T'04:00:00");
 const endTime = format(addDays(new Date(), 1), "yyyy-MM-dd'T'03:00:00");
@@ -111,3 +113,18 @@ export const getUserHours = (
       });
   });
 };
+
+// export const getBookingsView = (): Promise<BookingInformation> => {
+//   return new Promise((resolve, reject) => {
+//     client.get(
+//       "https://matrix.fusionacademy.com/api/Schedule/GetBookingsView",
+//       getBookingsRequestsBody,
+
+//       {
+//         headers: {
+//           Authorization: `Bearer ${accessToken}`,
+//         },
+//       }
+//     );
+//   });
+// };
