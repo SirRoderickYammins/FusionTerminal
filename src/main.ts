@@ -5,26 +5,47 @@ import { login } from "./api";
 import { getTodaysSchedule, setSessionStatus } from "./matrix";
 import { initialActionSelect } from "./prompts/initialActionSelect";
 import { getTodaySelection } from "./prompts/getTodaySelect";
+import { getSessionActions } from "./prompts/getSessionActions";
+import { Session } from "./types/sessionTypes";
+
+const PAGES = {
+  homepage: async () => {
+    console.clear();
+    const response = await initialActionSelect();
+    if (response.initialActionSelect === "lookSchedule") {
+      await PAGES.todaySchedule();
+    }
+  },
+  todaySchedule: async () => {
+    console.clear();
+    console.log("Loading schedule...");
+    const schedule = await getTodaysSchedule();
+    console.clear();
+    const response = await getTodaySelection(schedule.sessions);
+
+    if (response.sessionSelect === -1) {
+      await PAGES.homepage();
+    } else {
+      const session = schedule.sessions[response.sessionSelect];
+      await PAGES.sessionStuff(session);
+    }
+  },
+  sessionStuff: async (session: Session) => {
+    console.clear();
+    const response = await getSessionActions(session);
+    if (response.sessionActions === "attended") {
+      console.log("TODO: Set status true for", session.title);
+    } else if (response.sessionActions === "unattended") {
+      console.log("TODO: Set status false for", session.title);
+    } else {
+      await PAGES.todaySchedule();
+    }
+  },
+};
 
 const main = async () => {
-  console.clear();
   await login();
-  const response = await initialActionSelect();
-  console.clear();
-
-  switch (response.initialActionSelect) {
-    case "lookSchedule":
-      const schedule = await getTodaysSchedule();
-      const response = await getTodaySelection(schedule.sessions);
-      console.log(schedule.sessions[response.sessionSelect]);
-      break;
-
-    default:
-      console.log("get fucked");
-      break;
-  }
-
-  // console.log(shit.sessions[0].appointmentStyle);
+  await PAGES.homepage();
 };
 
 main().catch(console.error);
