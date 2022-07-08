@@ -12,6 +12,7 @@ const loginInfo = new URLSearchParams({
 
 export let accessToken = "";
 
+
 export const login = async () => {
   await client
     .post(
@@ -22,5 +23,10 @@ export const login = async () => {
     .then(() => {
       const cookies = jar.getCookiesSync("https://matrix.fusionacademy.com");
       accessToken = cookies[0].value;
-    });
-};
+    })
+    .catch((err) => {
+      console.log("Matrix is down.");
+
+      })
+    };
+
