@@ -1,6 +1,7 @@
 import { initialActionSelect } from "./prompts/initialActionSelect";
 import { getTodaySelection } from "./prompts/getTodaySelect";
 import { getSessionActions } from "./prompts/getSessionActions";
+import { matrixSelectionMenu, planningTimeMenu } from "./prompts/matrixActions";
 import { getCurrentUser, getTodaysSchedule, getUserHours, setSessionStatus } from "./matrix";
 import { Session, CampusHashKey } from "./types/sessionTypes";
 
@@ -10,18 +11,39 @@ export const PAGES = {
     console.clear();
     const response = await initialActionSelect();
     if (response.initialActionSelect === "lookSchedule") {
-      await PAGES.todaySchedule();
+      PAGES.matrixActionsList();
     }
+  },
+  planningTimeMenu: async () => {
+    console.clear();
+    
+
+  },
+  matrixActionsList: async () => {
+    console.clear();
+    const response = await matrixSelectionMenu();
+    switch (response.MatrixActionSelect) {
+        case ("planningTimeSelection"):
+            console.clear();
+            await PAGES.planningTimeMenu();
+            break;
+        case ("todayScheduleSelection"):
+            console.clear();
+            PAGES.todaySchedule();
+            break;
+        case("Return"):
+            console.clear();
+            PAGES.homepage();
+            break;
+    }
+
+
   },
   todaySchedule: async () => {
     console.clear();
     console.log("Loading schedule...");
     const schedule = await getTodaysSchedule();
     console.clear();
-    // const campusHashKey = await getCurrentUser();
-    // console.log(campusHashKey);
-    // const planningTime = await getUserHours(campusHashKey);
-    // console.log(planningTime.earnedPlanningTime.planningTimeBalanceMinutes);
     const response = await getTodaySelection(schedule.sessions);
 
     if (response.sessionSelect === -1) {

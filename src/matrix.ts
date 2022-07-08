@@ -104,8 +104,7 @@ export const getUserHours = (
         }
       )
       .then((res) => {
-        console.log(res.data.earnedPlanningTime);
-        resolve(res.data.earnedPlanningTime);
+        resolve(res.data);
       })
       .catch((err) => {
         reject("Error occurred obtaining planning time.");
