@@ -8,60 +8,44 @@ import { getTodaySelection } from "./prompts/getTodaySelect";
 import { getSessionActions } from "./prompts/getSessionActions";
 import { Session } from "./types/sessionTypes";
 
-const PAGES: Record<string, Function> = {
+const PAGES = {
   homepage: async () => {
+    console.clear();
     const response = await initialActionSelect();
     if (response.initialActionSelect === "lookSchedule") {
-      return { page: "todaySchedule", args: [] };
-    } else {
-      return undefined;
+      await PAGES.todaySchedule();
     }
   },
   todaySchedule: async () => {
+    console.clear();
     console.log("Loading schedule...");
     const schedule = await getTodaysSchedule();
     console.clear();
     const response = await getTodaySelection(schedule.sessions);
-    if (response.sessionSelect === -1) {
-      return { page: "homepage", args: [] };
-    }
-    const session = schedule.sessions[response.sessionSelect];
 
-    return { page: "sessionStuff", args: [session] };
+    if (response.sessionSelect === -1) {
+      await PAGES.homepage();
+    } else {
+      const session = schedule.sessions[response.sessionSelect];
+      await PAGES.sessionStuff(session);
+    }
   },
   sessionStuff: async (session: Session) => {
+    console.clear();
     const response = await getSessionActions(session);
     if (response.sessionActions === "attended") {
-      // TODO: Set the status to true
-      // shit.sessions[0].appointmentStyle
+      console.log("TODO: Set status true for", session.title);
     } else if (response.sessionActions === "unattended") {
-      // TODO: Set the status to false
-      // shit.sessions[0].appointmentStyle
+      console.log("TODO: Set status false for", session.title);
     } else {
-      return { page: "todaySchedule", args: [] };
+      await PAGES.todaySchedule();
     }
-    console.log("Action:", response.sessionActions, "for", session.title);
-    return undefined;
   },
 };
 
 const main = async () => {
   await login();
-
-  // The default page should always be homepage
-  let next: { page: string; args: any[] } | undefined = {
-    page: "homepage",
-    args: [],
-  };
-
-  do {
-    console.clear();
-    if (PAGES[next.page]) {
-      next = await PAGES[next.page](...next.args);
-    } else {
-      console.log(`Error: ${next.page} doesn't exist.`);
-    }
-  } while (next);
+  await PAGES.homepage();
 };
 
 main().catch(console.error);
