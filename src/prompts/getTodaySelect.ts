@@ -1,5 +1,19 @@
+import kleur from "kleur";
 import prompts from "prompts";
 import { Session } from "../types/sessionTypes";
+
+
+const sessionRenderStatus = (appointmentStatus: string) => {
+  if (appointmentStatus == "renderedTaught"){
+    return kleur.green("Rendered Taught");
+  }
+  if (appointmentStatus == "renderedStudentAbsent"){
+    return kleur.red("Rendered Absent");
+  }
+  else {
+    return "Session Not Rendered"
+  }
+}
 
 export const getTodaySelection = async (sessions: Session[]) => {
   return prompts([
@@ -10,8 +24,8 @@ export const getTodaySelection = async (sessions: Session[]) => {
       choices: [
         ...sessions.map((session, index) => {
           return {
-            title: session.title,
-            description: `[${session.sessionNumber}/${session.sessionCountTotal}]`,
+            title: `${session.title} [${session.sessionNumber}/${session.sessionCountTotal}]`,
+            description: ` Session Status: ${sessionRenderStatus(session.appointmentStyle)}`,
             value: index,
           };
         }),
