@@ -22,3 +22,14 @@ export type Schedule = {
   lastName: string;
   sessions: Session[];
 };
+
+export type CampusHashKey = {
+  defaultCampusHashKey: string;
+};
+
+export type UserInformation = {
+  earnedPlanningTime: {
+    planningTimeBalanceMinutes: number;
+    usedPlanningTimeMinutes: number;
+  },
+};
