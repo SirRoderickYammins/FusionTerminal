@@ -1,3 +1,10 @@
+import { format, Day } from "date-fns";
+
+const today = format(new Date(), "yyyy-MM-dd");
+console.log(today);
+
+// Request body to find all classes within the current workweek.
+// Body is used in the getBookingsView function in matrix.ts
 export const getBookingsRequestsBody = {
   dateRangeFilters: [
     {
