@@ -3,6 +3,7 @@ import { getTodaySelection } from "./prompts/getTodaySelect";
 import { getSessionActions } from "./prompts/getSessionActions";
 import { matrixSelectionMenu, planningTimeMenu } from "./prompts/matrixActions";
 import {
+  getBookingsView,
   getCurrentUser,
   getTodaysSchedule,
   getUserHours,
@@ -31,8 +32,8 @@ export const PAGES = {
           `You have ${await PlanningTimeBalance()} minutes of planning time.`
         );
         break;
-      case "Automatically Add Planning Time":
-      // TODO: Make planning time function.
+      case "autoAddPlanning":
+        console.log(await (await getBookingsView()).reservations[0].startDate);
     }
   },
 
