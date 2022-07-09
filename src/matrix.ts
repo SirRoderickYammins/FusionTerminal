@@ -114,17 +114,23 @@ export const getUserHours = (
   });
 };
 
-// export const getBookingsView = (): Promise<BookingInformation> => {
-//   return new Promise((resolve, reject) => {
-//     client.get(
-//       "https://matrix.fusionacademy.com/api/Schedule/GetBookingsView",
-//       getBookingsRequestsBody,
-
-//       {
-//         headers: {
-//           Authorization: `Bearer ${accessToken}`,
-//         },
-//       }
-//     );
-//   });
-// };
+export const getBookingsView = (): Promise<BookingInformation> => {
+  return new Promise((resolve, reject) => {
+    client
+      .post(
+        "https://matrix.fusionacademy.com/api/Schedule/GetBookingsView",
+        getBookingsRequestsBody,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject("Error occurred getting your availability");
+      });
+  });
+};
