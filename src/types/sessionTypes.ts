@@ -87,6 +87,11 @@ export type UserInformation = {
   };
 };
 
+export type ClassBlocks = {
+  startDate: string;
+  endDate: string;
+};
+
 export type BookingInformation = {
-  reservations: Array<any>;
+  reservations: ClassBlocks[];
 };
