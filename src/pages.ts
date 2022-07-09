@@ -9,8 +9,9 @@ import {
   getUserHours,
   setSessionStatus,
 } from "./matrix";
-import { Session, CampusHashKey } from "./types/sessionTypes";
+import { Session } from "./types/sessionTypes";
 import { GetScheduleFreeTime, PlanningTimeBalance } from "./api";
+import { createReservation } from "./matrix/createReservation";
 
 export const PAGES = {
   homepage: async () => {
@@ -28,14 +29,22 @@ export const PAGES = {
       case "viewPlanTime":
         console.clear();
         console.log("Loading planning time. This may take a few seconds.");
-        
+
         console.log(
           `You have ${await PlanningTimeBalance()} minutes of planning time.`
         );
-       
+
         break;
       case "autoAddPlanning":
-      GetScheduleFreeTime(await getBookingsView());
+        // createReservation(
+        //   "2022-07-05T16:30:00-04:00",
+        //   "2022-07-05T17:30:00-04:00"
+        // );
+        GetScheduleFreeTime(await getBookingsView());
+
+        break;
+      case "Return":
+        PAGES.matrixActionsList();
     }
   },
 

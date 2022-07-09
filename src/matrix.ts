@@ -3,17 +3,17 @@ import { accessToken, client } from "./api";
 import { format, addDays } from "date-fns";
 import {
   BookingInformation,
-  CampusHashKey,
   Schedule,
   Session,
   UserInformation,
+  UserPlanningTime,
 } from "./types/sessionTypes";
 import { getBookingsRequestsBody } from "./requestbodies/matrixrequests";
 
-const startTime = format(new Date(), "yyyy-MM-dd'T'04:00:00");
-const endTime = format(addDays(new Date(), 1), "yyyy-MM-dd'T'03:00:00");
-
 export const getTodaysSchedule = (): Promise<Schedule> => {
+  const startTime = format(new Date(), "yyyy-MM-dd'T'04:00:00");
+  const endTime = format(addDays(new Date(), 1), "yyyy-MM-dd'T'03:00:00");
+
   return new Promise((resolve, reject) => {
     axios
       .get(
@@ -74,7 +74,7 @@ export const setSessionStatus = (session: Session, status: boolean) => {
   });
 };
 
-export const getCurrentUser = (): Promise<CampusHashKey> => {
+export const getCurrentUser = (): Promise<UserInformation> => {
   return new Promise((resolve, reject) => {
     client
       .get("https://matrix.fusionacademy.com/api/Directory/GetCurrentUser", {
@@ -94,7 +94,7 @@ export const getCurrentUser = (): Promise<CampusHashKey> => {
 
 export const getUserHours = (
   defaultCampusHashKey: string
-): Promise<UserInformation> => {
+): Promise<UserPlanningTime> => {
   return new Promise((resolve, reject) => {
     client
       .get(
@@ -119,7 +119,7 @@ export const getBookingsView = (): Promise<BookingInformation> => {
     client
       .post(
         "https://matrix.fusionacademy.com/api/Schedule/GetBookingsView",
-        getBookingsRequestsBody,
+        getBookingsRequestsBody(),
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

@@ -2,7 +2,10 @@ import axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 import { getCurrentUser, getUserHours } from "./matrix";
-import { UserInformation, BookingInformation } from "./types/sessionTypes";
+import { UserPlanningTime, BookingInformation } from "./types/sessionTypes";
+import { format, startOfWeek, endOfWeek, addDays, addHours } from "date-fns";
+import { utcToZonedTime } from "date-fns-tz";
+import { currentUser } from "./current-user";
 
 const jar = new CookieJar();
 export const client = wrapper(axios.create({ jar }));
@@ -31,7 +34,7 @@ export const login = async () => {
 };
 
 export const PlanningTimeBalance = async (): Promise<
-  UserInformation["earnedPlanningTime"]["planningTimeBalanceMinutes"]
+  UserPlanningTime["earnedPlanningTime"]["planningTimeBalanceMinutes"]
 > => {
   const planningTimeMins = await getUserHours(
     (
@@ -42,9 +45,18 @@ export const PlanningTimeBalance = async (): Promise<
 };
 
 export const GetScheduleFreeTime = (booking_info: BookingInformation) => {
-  console.log(
-    booking_info.reservations.map((eachClass) => {
-      return [eachClass.startDate, eachClass.endDate];
-    })
+  const bookedSlots = booking_info.reservations.map((eachClass) => {
+    return {
+      startDate: new Date(eachClass.startDate),
+      endDate: new Date(eachClass.endDate),
+    };
+  });
+
+  console.log(bookedSlots);
+  const currentDate = utcToZonedTime(new Date(), currentUser.iana);
+  const mondayOfWorkWeek = format(
+    addHours(addDays(startOfWeek(currentDate), 1), 7),
+    "yyyy-MM-dd'T'HH:mm:ssXXXXX"
   );
+  console.log(mondayOfWorkWeek);
 };

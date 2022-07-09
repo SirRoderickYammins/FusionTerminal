@@ -8,7 +8,9 @@ export type Student = {
 export type Campus = {
   modelKey: number;
   name: string;
+  nameSimplified: string;
   timeZoneInfoId: string;
+  /** Campus Hash Key */
   hashKey: string;
   iana: string;
   created: string;
@@ -76,11 +78,22 @@ export type Schedule = {
   sessions: Session[];
 };
 
-export type CampusHashKey = {
+export type UserInformation = {
   defaultCampusHashKey: string;
+  /** Teacher hash key */
+  hashKey: string;
+  firstName: string;
+  lastName: string;
+  employeeRecord: {
+    ptoBalanceHours: number;
+  };
+  employeeId: number;
+  /** Timezone */
+  iana: string;
+  campuses: Campus[];
 };
 
-export type UserInformation = {
+export type UserPlanningTime = {
   earnedPlanningTime: {
     planningTimeBalanceMinutes: number;
     usedPlanningTimeMinutes: number;
