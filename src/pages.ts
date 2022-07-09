@@ -10,7 +10,7 @@ import {
   setSessionStatus,
 } from "./matrix";
 import { Session, CampusHashKey } from "./types/sessionTypes";
-import { PlanningTimeBalance } from "./api";
+import { GetScheduleFreeTime, PlanningTimeBalance } from "./api";
 
 export const PAGES = {
   homepage: async () => {
@@ -28,12 +28,14 @@ export const PAGES = {
       case "viewPlanTime":
         console.clear();
         console.log("Loading planning time. This may take a few seconds.");
+        
         console.log(
           `You have ${await PlanningTimeBalance()} minutes of planning time.`
         );
+       
         break;
       case "autoAddPlanning":
-        console.log(await (await getBookingsView()).reservations[0].startDate);
+      GetScheduleFreeTime(await getBookingsView());
     }
   },
 
@@ -42,15 +44,12 @@ export const PAGES = {
     const response = await matrixSelectionMenu();
     switch (response.MatrixActionSelect) {
       case "planningTimeSelection":
-        console.clear();
         await PAGES.planningTimeMatrix();
         break;
       case "todayScheduleSelection":
-        console.clear();
         PAGES.todaySchedule();
         break;
       case "Return":
-        console.clear();
         PAGES.homepage();
         break;
     }

@@ -2,7 +2,7 @@ import axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
 import { getCurrentUser, getUserHours } from "./matrix";
-import { UserInformation } from "./types/sessionTypes";
+import { UserInformation, BookingInformation } from "./types/sessionTypes";
 
 const jar = new CookieJar();
 export const client = wrapper(axios.create({ jar }));
@@ -40,3 +40,18 @@ export const PlanningTimeBalance = async (): Promise<
   );
   return planningTimeMins.earnedPlanningTime.planningTimeBalanceMinutes;
 };
+
+export const GetScheduleFreeTime = (booking_info: BookingInformation) => {
+  console.log(booking_info.reservations.map((startDate, index) => {
+      // IDK how to do this.
+      // Reservations is an array of sessions for the whole week.
+      // If i do booking_info.reservations[0].startDate, I get the start time
+      // of the first class I had this week.
+      // Just need map to loop thru the array and return an array of arrays,
+      // [{startDate, endDate}, {startDate2, endDate2} ...]
+
+
+
+  }));
+  
+}
