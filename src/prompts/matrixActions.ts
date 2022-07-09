@@ -18,36 +18,37 @@ export const matrixSelectionMenu = async () =>
           value: "todayScheduleSelection",
         },
         {
-            title: "Go Back",
-            value: "Return",
+          title: "Go Back",
+          value: "Return",
         },
       ],
       initial: 0,
     },
   ]);
 
-  export const planningTimeMenu = async () =>
-    prompts([
+export const planningTimeMenu = async () =>
+  prompts([
+    {
+      type: "select",
+      name: "PlanningTimeSelection",
+      message: "Select an Option",
+      choices: [
         {
-            type: "select",
-            name: "PlanningTimeSelection",
-            message: "Select an Option",
-            choices: [
-                {
-                    title: "Check Planning Time",
-                    description: "View your planning time",
-                    value: "viewPlanTime",
-                },
-                {
-                    title: "Automatically Add Planning Time",
-                    description: "Empty spaces in your schedule will be filled with planning time.",
-                },
-                {
-                    title: "Go Back",
-                    value: "Return",
-                }
-            ],
-            initial: 0,
-            
-        }
-    ])
+          title: "Check Planning Time",
+          description: "View your planning time",
+          value: "viewPlanTime",
+        },
+        {
+          title: "Automatically Add Planning Time",
+          description:
+            "Empty spaces in your schedule will be filled with planning time.",
+          value: "autoAddPlanning",
+        },
+        {
+          title: "Go Back",
+          value: "Return",
+        },
+      ],
+      initial: 0,
+    },
+  ]);
