@@ -13,6 +13,7 @@ import {
 } from "date-fns";
 import { utcToZonedTime, format } from "date-fns-tz";
 import { currentUser } from "./current-user";
+import { createReservation } from "./matrix/createReservation";
 
 const jar = new CookieJar();
 export const client = wrapper(axios.create({ jar }));
@@ -147,6 +148,10 @@ export const GetScheduleFreeTime = (booking_info: BookingInformation) => {
     }
   }
 
-  // console.log(allocatedTime, "/", totalTimeAvailable);
+  freeSlots.forEach((slot) => {
+    // createReservation(slot.startDate, slot.endDate);
+  });
+
+  console.log("Allocated time: ", allocatedTime, "/", totalTimeAvailable);
   console.log("Free slots:", freeSlots);
 };
