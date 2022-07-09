@@ -94,15 +94,17 @@ export const GetScheduleFreeTime = (booking_info: BookingInformation) => {
       format(date, "HH:mm:ss", { timeZone: currentUser.iana }) === endOfDayTime;
 
     if (isEndOfDay) {
+      // If we have an active currentFreeSlot, we need to add the endDate to the end of the day time and add it to freeSLots
       if (currentFreeSlot) {
         freeSlots.push({
           startDate: currentFreeSlot.startDate as string,
           endDate: formatDate(date),
         });
         allocatedTime += 30;
-        currentFreeSlot = undefined;
       }
 
+      currentFreeSlot = undefined;
+      // We move to the next day, at 6:30 am
       date = setMinutes(setHours(addDays(date, 1), 6), 30);
 
       // TODO: Add a check to see if we're reached the weekend, if yes, kill the loop
