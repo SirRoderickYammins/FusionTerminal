@@ -62,7 +62,7 @@ export const planningTimeMenu = async () =>
 export const planningTimeDisplayDashboard = async (
   planningTimeBalanceMinutes: number
 ) => {
-  prompts([
+  return prompts([
     {
       type: "select",
       name: "planTimeDisplay",
