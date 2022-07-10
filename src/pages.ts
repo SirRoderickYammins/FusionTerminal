@@ -35,7 +35,10 @@ export const PAGES = {
       case "viewPlanTime":
         console.clear();
         console.log("Loading Planning Time Balance. This may take a moment...");
-        planningTimeDisplayDashboard(await PlanningTimeBalance());
+        const res = await planningTimeDisplayDashboard(await PlanningTimeBalance());
+        if (res.planTimeDisplay == "Return"){
+          PAGES.matrixActionsList();
+        }
         break;
       case "autoAddPlanning":
         GetScheduleFreeTime(await getBookingsView());
@@ -83,7 +86,7 @@ export const PAGES = {
     const response = await getTodaySelection(schedule.sessions);
 
     if (response.sessionSelect === -1) {
-      await PAGES.homepage();
+      await PAGES.matrixActionsList();
     } else {
       const session = schedule.sessions[response.sessionSelect];
       await PAGES.sessionStuff(session);
