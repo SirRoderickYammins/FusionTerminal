@@ -32,6 +32,7 @@ export const createReservation = async (startDate: string, endDate: string) => {
         }
       )
       .then((res) => {
+        console.log(res.data);
         resolve(res.data);
       })
       .catch((err) => {

@@ -3,6 +3,7 @@ import { accessToken, client } from "./api";
 import { format, addDays } from "date-fns";
 import {
   BookingInformation,
+  PayPeriod,
   Schedule,
   Session,
   UserInformation,
@@ -131,6 +132,23 @@ export const getBookingsView = (): Promise<BookingInformation> => {
       })
       .catch((err) => {
         reject("Error occurred getting your availability");
+      });
+  });
+};
+
+export const getCurrentPayPeriod = (): Promise<PayPeriod> => {
+  return new Promise((resolve, reject) => {
+    client
+      .get("https://matrix.fusionacademy.com/api/Schedule/GetPayPeriodByDate", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
       });
   });
 };

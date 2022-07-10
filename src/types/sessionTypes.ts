@@ -107,4 +107,11 @@ export type ClassBlocks = {
 
 export type BookingInformation = {
   reservations: ClassBlocks[];
+  staffAvailabilities: ClassBlocks[];
+};
+
+export type PayPeriod = {
+  payrollDate: string;
+  startDate: string;
+  endDate: string;
 };
