@@ -1,4 +1,7 @@
 import prompts from "prompts";
+import kleur from "kleur";
+import { currentUser } from "../current-user";
+import { UserInformation } from "../types/sessionTypes";
 
 export const matrixSelectionMenu = async () =>
   prompts([
@@ -9,7 +12,7 @@ export const matrixSelectionMenu = async () =>
       choices: [
         {
           title: "Add/Check Planning Time",
-          description: "Automatically Add All Planning Time",
+          description: "View planning time or have BTerm add it for you.",
           value: "planningTimeSelection",
         },
         {
@@ -17,6 +20,11 @@ export const matrixSelectionMenu = async () =>
           description: "View/Render Classes",
           value: "todayScheduleSelection",
         },
+        {
+          title: "View your PTO Balance",
+          description: "See your PTO balance",
+          value: "getPTO",
+        }
         {
           title: "Go Back",
           value: "Return",
@@ -52,3 +60,28 @@ export const planningTimeMenu = async () =>
       initial: 0,
     },
   ]);
+
+
+export const planningTimeDisplayDashboard = async (planningTimeBalanceMinutes: number) => {
+  prompts ([
+    {
+      type: "select",
+      name: "planTimeDisplay",
+      message: `You have ${kleur.green(planningTimeBalanceMinutes)} minutes of planning time.`,
+      choices:[{
+        title: "Go back.",
+        value: 'Return',
+      }]
+    }
+  ])
+
+}
+
+
+export const PTOBalanceMenu = async (currentUser) => {
+  prompts ([
+
+  ])
+
+
+}

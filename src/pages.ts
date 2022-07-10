@@ -1,7 +1,7 @@
 import { initialActionSelect } from "./prompts/initialActionSelect";
 import { getTodaySelection } from "./prompts/getTodaySelect";
 import { getSessionActions } from "./prompts/getSessionActions";
-import { matrixSelectionMenu, planningTimeMenu } from "./prompts/matrixActions";
+import { matrixSelectionMenu, planningTimeMenu, planningTimeDisplayDashboard } from "./prompts/matrixActions";
 import {
   getBookingsView,
   getCurrentUser,
@@ -28,20 +28,13 @@ export const PAGES = {
     switch (res.PlanningTimeSelection) {
       case "viewPlanTime":
         console.clear();
-        console.log("Loading planning time. This may take a few seconds.");
-
-        console.log(
-          `You have ${await PlanningTimeBalance()} minutes of planning time.`
-        );
-
+        console.log("Loading Planning Time Balance. This may take a moment...");
+        planningTimeDisplayDashboard(await PlanningTimeBalance()); 
         break;
       case "autoAddPlanning":
-        // createReservation(
-        //   "2022-07-05T16:30:00-04:00",
-        //   "2022-07-05T17:30:00-04:00"
-        // );
         GetScheduleFreeTime(await getBookingsView());
-
+          // PAGES.matrixActionsList();
+          console.log("Planning time added.");
         break;
       case "Return":
         PAGES.matrixActionsList();
