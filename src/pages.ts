@@ -1,7 +1,12 @@
 import { initialActionSelect } from "./prompts/initialActionSelect";
 import { getTodaySelection } from "./prompts/getTodaySelect";
 import { getSessionActions } from "./prompts/getSessionActions";
-import { matrixSelectionMenu, planningTimeMenu, planningTimeDisplayDashboard } from "./prompts/matrixActions";
+import {
+  matrixSelectionMenu,
+  planningTimeMenu,
+  planningTimeDisplayDashboard,
+  PTOBalanceMenu,
+} from "./prompts/matrixActions";
 import {
   getBookingsView,
   getCurrentUser,
@@ -12,6 +17,7 @@ import {
 import { Session } from "./types/sessionTypes";
 import { GetScheduleFreeTime, PlanningTimeBalance } from "./api";
 import { createReservation } from "./matrix/createReservation";
+import { currentUser } from "./current-user";
 
 export const PAGES = {
   homepage: async () => {
@@ -29,15 +35,25 @@ export const PAGES = {
       case "viewPlanTime":
         console.clear();
         console.log("Loading Planning Time Balance. This may take a moment...");
-        planningTimeDisplayDashboard(await PlanningTimeBalance()); 
+        planningTimeDisplayDashboard(await PlanningTimeBalance());
         break;
       case "autoAddPlanning":
         GetScheduleFreeTime(await getBookingsView());
-          // PAGES.matrixActionsList();
-          console.log("Planning time added.");
+        // PAGES.matrixActionsList();
+        console.log("Planning time added.");
         break;
       case "Return":
         PAGES.matrixActionsList();
+    }
+  },
+
+  ptoBalanceMenu: async () => {
+    console.clear();
+    const res = await PTOBalanceMenu(
+      currentUser.employeeRecord.ptoBalanceHours
+    );
+    if (res.ptoHours == "Return") {
+      PAGES.matrixActionsList();
     }
   },
 
@@ -50,6 +66,9 @@ export const PAGES = {
         break;
       case "todayScheduleSelection":
         PAGES.todaySchedule();
+        break;
+      case "getPTO":
+        await PAGES.ptoBalanceMenu();
         break;
       case "Return":
         PAGES.homepage();

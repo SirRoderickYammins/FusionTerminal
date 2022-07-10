@@ -1,7 +1,5 @@
 import prompts from "prompts";
 import kleur from "kleur";
-import { currentUser } from "../current-user";
-import { UserInformation } from "../types/sessionTypes";
 
 export const matrixSelectionMenu = async () =>
   prompts([
@@ -24,7 +22,7 @@ export const matrixSelectionMenu = async () =>
           title: "View your PTO Balance",
           description: "See your PTO balance",
           value: "getPTO",
-        }
+        },
         {
           title: "Go Back",
           value: "Return",
@@ -61,27 +59,39 @@ export const planningTimeMenu = async () =>
     },
   ]);
 
-
-export const planningTimeDisplayDashboard = async (planningTimeBalanceMinutes: number) => {
-  prompts ([
+export const planningTimeDisplayDashboard = async (
+  planningTimeBalanceMinutes: number
+) => {
+  prompts([
     {
       type: "select",
       name: "planTimeDisplay",
-      message: `You have ${kleur.green(planningTimeBalanceMinutes)} minutes of planning time.`,
-      choices:[{
-        title: "Go back.",
-        value: 'Return',
-      }]
-    }
-  ])
+      message: `You have ${kleur.green(
+        planningTimeBalanceMinutes
+      )} minutes of planning time.`,
+      choices: [
+        {
+          title: "Go back.",
+          value: "Return",
+        },
+      ],
+    },
+  ]);
+};
 
-}
-
-
-export const PTOBalanceMenu = async (currentUser) => {
-  prompts ([
-
-  ])
-
-
-}
+export const PTOBalanceMenu = async (ptoBalance: number) => {
+  return prompts([
+    {
+      type: "select",
+      name: "ptoHours",
+      message: `You have ${kleur.green(ptoBalance)} hours of PTO`,
+      choices: [
+        {
+          title: "Go back",
+          value: "Return",
+        },
+      ],
+      initial: 0,
+    },
+  ]);
+};
