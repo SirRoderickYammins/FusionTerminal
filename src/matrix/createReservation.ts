@@ -1,9 +1,7 @@
 import { client, accessToken } from "../api";
 import { currentUser } from "../current-user";
 
-export const createReservation = (startDate: string, endDate: string) => {
-  // startDate: "2022-07-05T16:30:00-04:00",
-  // endDate: "2022-07-05T17:30:00-04:00",
+export const createReservation = async (startDate: string, endDate: string) => {
   return new Promise((resolve, reject) => {
     const body = {
       payCode: { hashKey: "93798bd2-fcdc-4614-a26f-0e2c5f0e5ecd" },

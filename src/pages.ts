@@ -23,8 +23,13 @@ export const PAGES = {
   homepage: async () => {
     console.clear();
     const response = await initialActionSelect();
-    if (response.initialActionSelect === "lookSchedule") {
-      PAGES.matrixActionsList();
+    switch (response.initialActionSelect) {
+      case "Matrix":
+        PAGES.matrixActionsList();
+        break;
+      case 4:
+        console.clear();
+        process.exit();
     }
   },
 
@@ -35,8 +40,10 @@ export const PAGES = {
       case "viewPlanTime":
         console.clear();
         console.log("Loading Planning Time Balance. This may take a moment...");
-        const res = await planningTimeDisplayDashboard(await PlanningTimeBalance());
-        if (res.planTimeDisplay == "Return"){
+        const res = await planningTimeDisplayDashboard(
+          await PlanningTimeBalance()
+        );
+        if (res.planTimeDisplay == "Return") {
           PAGES.matrixActionsList();
         }
         break;

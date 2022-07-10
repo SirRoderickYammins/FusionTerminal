@@ -11,7 +11,7 @@ export const initialActionSelect = async () =>
         {
           title: kleur.magenta("Matrix"),
           description: "View your schedule and make changes",
-          value: "lookSchedule",
+          value: "Matrix",
         },
         {
           title: "Salesforce",
@@ -24,6 +24,11 @@ export const initialActionSelect = async () =>
           description: "Edit Classes and Assignments",
           value: 3,
           disabled: true,
+        },
+        {
+          title: "Quit BTerm",
+          description: "Leave the program.",
+          value: 4,
         },
       ],
       initial: 0,

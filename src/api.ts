@@ -44,12 +44,15 @@ export const login = async () => {
 export const PlanningTimeBalance = async (): Promise<
   UserPlanningTime["earnedPlanningTime"]["planningTimeBalanceMinutes"]
 > => {
-  const planningTimeMins = await getUserHours(
+  const userInfo = await getUserHours(
     (
       await getCurrentUser()
     ).defaultCampusHashKey
   );
-  return planningTimeMins.earnedPlanningTime.planningTimeBalanceMinutes;
+  const currentPlanningTimeBalance =
+    userInfo.earnedPlanningTime.planningTimeBalanceMinutes -
+    userInfo.earnedPlanningTime.usedPlanningTimeMinutes;
+  return currentPlanningTimeBalance;
 };
 
 const formatDate = (date: Date) => {
@@ -58,7 +61,7 @@ const formatDate = (date: Date) => {
   });
 };
 
-export const GetScheduleFreeTime = (booking_info: BookingInformation) => {
+export const GetScheduleFreeTime = async (booking_info: BookingInformation) => {
   const { reservations: bookedSlots } = booking_info;
 
   // Get the date for the start of the week
@@ -83,7 +86,7 @@ export const GetScheduleFreeTime = (booking_info: BookingInformation) => {
   // We want to keep an eye on the allocatedTime, and stop the loop when we've reached our total time
   // the total time will probably have to be fed as a parameter
   let allocatedTime = 0;
-  const totalTimeAvailable = 420;
+  const totalTimeAvailable = await PlanningTimeBalance();
   // We want to know when is the end of a day time so we can immediately move to the next day
   const endOfDayTime = "19:00:00";
 
@@ -150,8 +153,8 @@ export const GetScheduleFreeTime = (booking_info: BookingInformation) => {
     }
   }
 
-  freeSlots.forEach((slot) => {
-    // createReservation(slot.startDate, slot.endDate);
+  freeSlots.forEach(async (slot) => {
+    await createReservation(slot.startDate, slot.endDate);
   });
 
   console.log("Allocated time: ", allocatedTime, "/", totalTimeAvailable);
