@@ -32,12 +32,12 @@ export const createReservation = async (startDate: string, endDate: string) => {
         }
       )
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data)
         resolve(res.data);
       })
       .catch((err) => {
         console.log(err);
-        // reject("There was an error creating a reservation.");
+        reject("There was an error creating a reservation.");
       });
   });
 };

@@ -1,9 +1,8 @@
 import kleur from "kleur";
 import prompts from "prompts";
-import { BookingInformation, Session, UserInformation } from "../types/sessionTypes";
+import {Session, UserInformation } from "../types/sessionTypes";
 import format from "date-fns/format";
 import { isSunday, isSaturday } from "date-fns";
-import { currentUser } from "../current-user";
 
 const sessionRenderStatus = (appointmentStatus: string) => {
   if (appointmentStatus == "renderedTaught") {

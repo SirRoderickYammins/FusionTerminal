@@ -3,10 +3,11 @@ dotenv.config();
 import prompts from "prompts";
 import { login } from "./api";
 import { PAGES } from "./pages";
-import { loadCurrentUser } from "./current-user";
+import { loadCurrentUser, thisPayPeriod } from "./current-user";
 
 const main = async () => {
   await login();
+  await thisPayPeriod();
   await loadCurrentUser();
   await PAGES.homepage();
 };

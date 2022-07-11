@@ -1,15 +1,17 @@
 import { format, startOfWeek, endOfWeek } from "date-fns";
 import { utcToZonedTime } from "date-fns-tz";
 import { currentUser } from "../current-user";
+import { currentPayPeriod } from "../current-user";
 
 // Request body to find all classes within the current workweek.
 // Body is used in the getBookingsView function in matrix.ts
 export const getBookingsRequestsBody = () => {
-  const currentDate = utcToZonedTime(new Date(), currentUser.iana);
+
+  const currentDate = utcToZonedTime(currentPayPeriod.startDate, currentUser.iana);
   const startDate = format(startOfWeek(currentDate), "yyyy-MM-dd'T'HH:mm:ss");
   const endDate = format(endOfWeek(currentDate, {}), "yyyy-MM-dd'T'HH:mm:ss");
 
-  utcToZonedTime;
+  // console.log("Here  is  the current payperiod"  + startDate + endDate);
 
   const { hashKey: teacherHashKey, defaultCampusHashKey: campusHashKey } =
     currentUser;
