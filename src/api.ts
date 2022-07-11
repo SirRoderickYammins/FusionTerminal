@@ -1,7 +1,7 @@
 import axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { CookieJar } from "tough-cookie";
-import { getCurrentUser, getUserHours } from "./matrix";
+import { getBookingsView, getCurrentUser, getUserHours } from "./matrix";
 import { UserPlanningTime, BookingInformation } from "./types/sessionTypes";
 import {
   startOfWeek,
@@ -11,6 +11,8 @@ import {
   setMinutes,
   setSeconds,
   differenceInMinutes,
+  endOfWeek,
+  addHours,
 } from "date-fns";
 import { utcToZonedTime, zonedTimeToUtc, format } from "date-fns-tz";
 const holidays = require("@date/holidays-us");
@@ -67,150 +69,21 @@ export const GetScheduleFreeTime = async (booking_info: BookingInformation) => {
   const { reservations, staffAvailabilities } = booking_info;
   const bookedSlots = [...reservations, ...staffAvailabilities];
 
-  // console.log(
-  //   bookedSlots.map((slot) => {
-  //     return {
-  //       startDate: formatDate(setSeconds(new Date(slot.startDate), 0)),
-  //       endDate: formatDate(setSeconds(new Date(slot.endDate), 0)),
-  //     };
-  //   })
-  // );
 
-  // Get the date for the start of the week
-  // The reason we're getting it at 6:30 is because the while loop below adds 30 minutes in the beginning of it
-  let date = setMinutes(
-    setHours(
-      addDays(
-        startOfWeek(
-          utcToZonedTime(currentPayPeriod.startDate, currentUser.iana)
-        ),
-        1
-      ),
-      0
-    ),
-    0
-  );
-  console.log(1);
-  if (holidays.isHoliday(zonedTimeToUtc(date, currentUser.iana))) {
-    date = addDays(date, 1);
-  }
+  let scheduleWindowBeginningOfWeek = addHours(addDays(startOfWeek(utcToZonedTime(currentPayPeriod.startDate, currentUser.iana)), 1), 7); 
+  const scheduleWindowEndOfWeek  = endOfWeek(utcToZonedTime(currentPayPeriod.startDate, currentUser.iana));
 
-  date = addMinutes(date, -30);
+  const bookings = await getBookingsView();
 
-  // This is where all of the free slot times will be stored
-  let freeSlots: {
-    startDate: string;
-    endDate: string;
-  }[] = [];
-  // This is a temporary variable to store the current free slot while we loop through the week
-  let currentFreeSlot:
-    | { startDate: string | undefined; endDate: string | undefined }
-    | undefined;
-  // We want to keep an eye on the allocatedTime, and stop the loop when we've reached our total time
-  // the total time will probably have to be fed as a parameter
-  let allocatedTime = 0;
-  const totalTimeAvailable = await PlanningTimeBalance();
-  // We want to know when is the end of a day time so we can immediately move to the next day
-  const startOfDayTime = "07:00:00";
-  const endOfDayTime = "19:00:00";
-  let hasStartedDay = false;
-  console.log(2);
-  while (allocatedTime < totalTimeAvailable) {
-    date = addMinutes(date, 30);
+  let Times = bookings.reservations.map((eachSlot) => {
+    return {startTime: eachSlot.startDate, endTime:eachSlot.endDate};
 
-    const isEndOfDay =
-      format(date, "HH:mm:ss", { timeZone: currentUser.iana }) === endOfDayTime;
-    const isStartOfDay =
-      format(date, "HH:mm:ss", { timeZone: currentUser.iana }) ===
-      startOfDayTime;
-
-    if (isStartOfDay) {
-      hasStartedDay = true;
-    }
-
-    if (isEndOfDay) {
-      // If we have an active currentFreeSlot, we need to add the endDate to the end of the day time and add it to freeSLots
-      if (currentFreeSlot) {
-        freeSlots.push({
-          startDate: currentFreeSlot.startDate as string,
-          endDate: formatDate(date),
-        });
-        allocatedTime += 30;
-      }
-
-      currentFreeSlot = undefined;
-      // We move to the next day, at 6:30 am
-      date = setMinutes(setHours(addDays(date, 1), 0), 0);
-      hasStartedDay = false;
-      if (holidays.isHoliday(date)) {
-        addDays(date, 1);
-      }
-      date = addMinutes(date, -30);
-
-      // TODO: Add a check to see if we're reached the weekend, if yes, kill the loop
-      continue;
-    }
-    console.log(3);
-    const conflict = bookedSlots.find((slot) => {
-      return (
-        formatDate(setSeconds(new Date(slot.startDate), 0)) === formatDate(date)
-      );
-    });
-
-    // console.log(formatDate(date), conflict ? conflict.startDate : undefined);
-
-    if (conflict && !hasStartedDay) {
-      // We want to know how many minutes the booked session has so that we can move that amount of time forward
-      const minutesBetween = differenceInMinutes(
-        new Date(conflict.endDate),
-        new Date(conflict.startDate)
-      );
-      date = addMinutes(date, minutesBetween - 30);
-      continue;
-    }
-    console.log(171)
-    // if (!hasStartedDay) {
-    //   continue;
-    // }
-    console.log(175)
-    if (!conflict && !currentFreeSlot) {
-      currentFreeSlot = {
-        startDate: formatDate(date),
-        endDate: undefined,
-      };
-    } else if (!conflict && currentFreeSlot) {
-      currentFreeSlot.endDate = formatDate(date);
-      allocatedTime += 30
-    } else if (conflict && currentFreeSlot) {
-      allocatedTime += 30;
-      freeSlots.push({
-        startDate: currentFreeSlot.startDate as string,
-        endDate: formatDate(date),
-      });
-      currentFreeSlot = undefined;
-      console.log(191)
-      // We want to know how many minutes the booked session has so that we can move that amount of time forward
-      const minutesBetween = differenceInMinutes(
-        new Date(conflict.endDate),
-        new Date(conflict.startDate)
-      );
-      date = addMinutes(date, minutesBetween - 30);
-    }
-    console.log(199)
-    if (allocatedTime = 420) {
-      if (currentFreeSlot) {
-        freeSlots.push({
-          startDate: currentFreeSlot.startDate as string,
-          endDate: formatDate(date),
-        });
-      }
-      break;
-    }
-  }
-  console.log(210);
-
-  freeSlots.forEach(async (slot) => {
-    console.log(slot);
-    createReservation(slot.startDate, slot.endDate);
   });
+  
+  let FreeSlots: Date[] = [];
+
+  console.log(formatDate(scheduleWindowBeginningOfWeek));
+   
+
+  // console.log(Times);
 };

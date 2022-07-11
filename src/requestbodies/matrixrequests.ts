@@ -9,7 +9,7 @@ export const getBookingsRequestsBody = () => {
 
   const currentDate = utcToZonedTime(currentPayPeriod.startDate, currentUser.iana);
   const startDate = format(startOfWeek(currentDate), "yyyy-MM-dd'T'HH:mm:ss");
-  const endDate = format(endOfWeek(currentDate, {}), "yyyy-MM-dd'T'HH:mm:ss");
+  const endDate = format(endOfWeek(currentDate), "yyyy-MM-dd'T'HH:mm:ss");
 
   // console.log("Here  is  the current payperiod"  + startDate + endDate);
 

@@ -10,7 +10,7 @@ export const matrixSelectionMenu = async () =>
       choices: [
         {
           title: "Add/Check Planning Time",
-          description: "View planning time or have BTerm add it for you.",
+          description: kleur.magenta("View planning time or have BTerm add it for you."),
           value: "planningTimeSelection",
         },
         {

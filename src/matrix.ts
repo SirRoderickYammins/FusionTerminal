@@ -127,6 +127,7 @@ export const getBookingsView = (): Promise<BookingInformation> => {
         }
       )
       .then((res) => {
+        // console.log(res.data);
         resolve(res.data);
       })
       .catch((err) => {

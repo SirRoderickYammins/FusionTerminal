@@ -4,11 +4,11 @@ import {Session, UserInformation } from "../types/sessionTypes";
 import format from "date-fns/format";
 import { isSunday, isSaturday } from "date-fns";
 
-const sessionRenderStatus = (appointmentStatus: string) => {
-  if (appointmentStatus == "renderedTaught") {
+const sessionRenderStatus = (session: Session) => {
+  if (session.appointmentStyle == "renderedTaught" || session.appointmentStyle == "subFound") {
     return kleur.green("Rendered Taught");
   }
-  if (appointmentStatus == "renderedStudentAbsent") {
+  if (session.appointmentStyle == "renderedStudentAbsent") {
     return kleur.red("Rendered Absent");
   } else {
     return "Session Not Rendered";
@@ -46,7 +46,7 @@ export const getTodaySelection = async (sessions: Session[], currentUser: UserIn
             return {
               title: `${startTimeFormatted} - ${session.title} [${session.sessionNumber}/${session.sessionCountTotal}] `,
               description: ` Session Status: ${sessionRenderStatus(
-                session.appointmentStyle
+                session
               )}`,
               value: index,
             };
