@@ -107,6 +107,7 @@ export type ClassBlocks = {
 
 export type BookingInformation = {
   reservations: ClassBlocks[];
+  /** Represents UNavailabilities. */
   staffAvailabilities: ClassBlocks[];
 };
 
