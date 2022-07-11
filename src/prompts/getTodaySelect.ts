@@ -1,8 +1,9 @@
 import kleur from "kleur";
 import prompts from "prompts";
-import { Session } from "../types/sessionTypes";
+import { BookingInformation, Session, UserInformation } from "../types/sessionTypes";
 import format from "date-fns/format";
 import { isSunday, isSaturday } from "date-fns";
+import { currentUser } from "../current-user";
 
 const sessionRenderStatus = (appointmentStatus: string) => {
   if (appointmentStatus == "renderedTaught") {
@@ -14,8 +15,8 @@ const sessionRenderStatus = (appointmentStatus: string) => {
     return "Session Not Rendered";
   }
 };
-
-export const getTodaySelection = async (sessions: Session[]) => {
+// Needed to pull currentUser because sessions  can be empty,  and iana wont populate as a result.
+export const getTodaySelection = async (sessions: Session[], currentUser: UserInformation) => {
   const todayDate = new Date();
   const corporateSlaveMessage = () => {
     if (isSunday(todayDate) || isSaturday(todayDate)) {
@@ -38,7 +39,7 @@ export const getTodaySelection = async (sessions: Session[]) => {
             // Converting the timezone of the date to the one that the campus.iana provides
             const startTime = new Date(
               new Date(session.startTime).toLocaleString("en-US", {
-                timeZone: session.series.campus.iana,
+                timeZone: currentUser.iana,
               })
             );
             const startTimeFormatted = format(startTime, "HH:mm");

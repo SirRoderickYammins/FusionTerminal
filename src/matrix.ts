@@ -65,7 +65,6 @@ export const setSessionStatus = (session: Session, status: boolean) => {
         }
       )
       .then((res) => {
-        console.log(res.data.message);
         resolve(res.data.message);
       })
       .catch((err) => {
