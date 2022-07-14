@@ -21,7 +21,6 @@ import { utcToZonedTime, zonedTimeToUtc, format } from "date-fns-tz";
 const holidays = require("@date/holidays-us");
 import { currentPayPeriod, currentUser } from "./current-user";
 import { createReservation } from "./matrix/createReservation";
-import { createImportSpecifier } from "typescript";
 
 const jar = new CookieJar();
 export const client = wrapper(axios.create({ jar }));
@@ -69,10 +68,14 @@ const formatDate = (date: Date) => {
   });
 };
 
-export const GetScheduleFreeTime = async (booking_info: BookingInformation) => {
-  const { reservations, staffAvailabilities } = booking_info;
-  const bookedSlots = [...reservations, ...staffAvailabilities];
+const timeInterval = (startTime: string, endTime: string) => {
+  return differenceInMinutes(
+    utcToZonedTime(startTime, currentUser.iana),
+    utcToZonedTime(endTime, currentUser.iana)
+  );
+};
 
+export const GetScheduleFreeTime = async () => {
   const scheduleWindowBeginningOfWeek = addHours(
     addDays(
       startOfWeek(utcToZonedTime(currentPayPeriod.startDate, currentUser.iana)),
@@ -88,26 +91,23 @@ export const GetScheduleFreeTime = async (booking_info: BookingInformation) => {
   const bookings = await getBookingsView();
 
   const BookedTimes = bookings.reservations.map((eachSlot) => {
-    return eachSlot.startDate, eachSlot.endDate;
+    return {
+      startDate: eachSlot.startDate,
+      endDate: eachSlot.endDate,
+      differenceinTime: timeInterval(eachSlot.endDate, eachSlot.startDate),
+    };
   });
 
   let FreeSlots: Date[] = [];
 
-  var currentDay = scheduleWindowBeginningOfWeek;
+  let currentDay = scheduleWindowBeginningOfWeek;
 
   while (isEqual(currentDay, endofDay) == false) {
-    FreeSlots.push(currentDay);
-
-    currentDay = addMinutes(currentDay, 30);
+    // Want to loop through the BookedTimes object here
+    // Basic idea is to check if currentDay is = to startDate
+    // If so, add the difference in time using addMinutes()
+    // Otherwise, push the currentDay time to FreeSlots, then add 30 minutes as normal.
   }
 
-  const OpenTimes = FreeSlots.map((eachSlot) => {
-    if (BookedTimes.includes(formatDate(eachSlot))) {
-      FreeSlots.pop();
-    } else {
-      return formatDate(eachSlot);
-    }
-  });
-
-  console.log(OpenTimes);
+  console.log(BookedTimes);
 };
