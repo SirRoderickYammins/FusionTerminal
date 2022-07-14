@@ -98,16 +98,22 @@ export const GetScheduleFreeTime = async () => {
     };
   });
 
-  let FreeSlots: Date[] = [];
+  let AllSlots: Date[] = [];
 
   let currentDay = scheduleWindowBeginningOfWeek;
 
   while (isEqual(currentDay, endofDay) == false) {
-    // Want to loop through the BookedTimes object here
-    // Basic idea is to check if currentDay is = to startDate
-    // If so, add the difference in time using addMinutes()
-    // Otherwise, push the currentDay time to FreeSlots, then add 30 minutes as normal.
+    AllSlots.push(currentDay);
+    currentDay = addMinutes(currentDay, 30);
   }
 
-  console.log(BookedTimes);
+  const FreeSlots = BookedTimes.map((eachClass) => {
+    if (
+      !AllSlots.includes(utcToZonedTime(eachClass.startDate, currentUser.iana))
+    ) {
+      let theShit: string[] = [];
+    }
+  });
+
+  console.log(FreeSlots);
 };
