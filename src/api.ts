@@ -13,11 +13,15 @@ import {
   differenceInMinutes,
   endOfWeek,
   addHours,
+  endOfDay,
+  compareAsc,
+  isEqual,
 } from "date-fns";
 import { utcToZonedTime, zonedTimeToUtc, format } from "date-fns-tz";
 const holidays = require("@date/holidays-us");
 import { currentPayPeriod, currentUser } from "./current-user";
 import { createReservation } from "./matrix/createReservation";
+import { createImportSpecifier } from "typescript";
 
 const jar = new CookieJar();
 export const client = wrapper(axios.create({ jar }));
@@ -69,21 +73,41 @@ export const GetScheduleFreeTime = async (booking_info: BookingInformation) => {
   const { reservations, staffAvailabilities } = booking_info;
   const bookedSlots = [...reservations, ...staffAvailabilities];
 
-
-  let scheduleWindowBeginningOfWeek = addHours(addDays(startOfWeek(utcToZonedTime(currentPayPeriod.startDate, currentUser.iana)), 1), 7); 
-  const scheduleWindowEndOfWeek  = endOfWeek(utcToZonedTime(currentPayPeriod.startDate, currentUser.iana));
+  const scheduleWindowBeginningOfWeek = addHours(
+    addDays(
+      startOfWeek(utcToZonedTime(currentPayPeriod.startDate, currentUser.iana)),
+      2
+    ),
+    7
+  );
+  const scheduleWindowEndOfWeek = endOfWeek(
+    utcToZonedTime(currentPayPeriod.startDate, currentUser.iana)
+  );
+  const endofDay = addHours(scheduleWindowBeginningOfWeek, 12);
 
   const bookings = await getBookingsView();
 
-  let Times = bookings.reservations.map((eachSlot) => {
-    return {startTime: eachSlot.startDate, endTime:eachSlot.endDate};
-
+  const BookedTimes = bookings.reservations.map((eachSlot) => {
+    return eachSlot.startDate, eachSlot.endDate;
   });
-  
+
   let FreeSlots: Date[] = [];
 
-  console.log(formatDate(scheduleWindowBeginningOfWeek));
-   
+  var currentDay = scheduleWindowBeginningOfWeek;
 
-  // console.log(Times);
+  while (isEqual(currentDay, endofDay) == false) {
+    FreeSlots.push(currentDay);
+
+    currentDay = addMinutes(currentDay, 30);
+  }
+
+  const OpenTimes = FreeSlots.map((eachSlot) => {
+    if (BookedTimes.includes(formatDate(eachSlot))) {
+      FreeSlots.pop();
+    } else {
+      return formatDate(eachSlot);
+    }
+  });
+
+  console.log(OpenTimes);
 };
