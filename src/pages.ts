@@ -48,7 +48,7 @@ export const PAGES = {
         }
         break;
       case "autoAddPlanning":
-        await GetScheduleFreeTime(await getBookingsView());
+        await GetScheduleFreeTime();
         // PAGES.matrixActionsList();
         console.log("Planning time added.");
         break;
@@ -89,7 +89,7 @@ export const PAGES = {
     console.clear();
     console.log("Loading schedule...");
     const schedule = await getTodaysSchedule();
-    
+
     const response = await getTodaySelection(schedule.sessions, currentUser);
 
     if (response.sessionSelect === -1) {
