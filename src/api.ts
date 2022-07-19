@@ -16,11 +16,13 @@ import {
   endOfDay,
   compareAsc,
   isEqual,
+  isWithinInterval,
 } from "date-fns";
 import { utcToZonedTime, zonedTimeToUtc, format } from "date-fns-tz";
 const holidays = require("@date/holidays-us");
 import { currentPayPeriod, currentUser } from "./current-user";
 import { createReservation } from "./matrix/createReservation";
+import { start } from "repl";
 
 const jar = new CookieJar();
 export const client = wrapper(axios.create({ jar }));
@@ -76,16 +78,18 @@ const timeInterval = (startTime: string, endTime: string) => {
 };
 
 export const GetScheduleFreeTime = async () => {
+  // Sets the beginning of the week to Monday after pay period start at 7AM.
   const scheduleWindowBeginningOfWeek = addHours(
     addDays(
       startOfWeek(utcToZonedTime(currentPayPeriod.startDate, currentUser.iana)),
-      2
+      1
     ),
     7
   );
-  const scheduleWindowEndOfWeek = endOfWeek(
+  let scheduleWindowEndOfWeek = endOfWeek(
     utcToZonedTime(currentPayPeriod.startDate, currentUser.iana)
   );
+
   const endofDay = addHours(scheduleWindowBeginningOfWeek, 12);
 
   const bookings = await getBookingsView();
@@ -102,18 +106,34 @@ export const GetScheduleFreeTime = async () => {
 
   let currentDay = scheduleWindowBeginningOfWeek;
 
-  while (isEqual(currentDay, endofDay) == false) {
+  while (!isEqual(currentDay, endofDay)) {
     AllSlots.push(currentDay);
     currentDay = addMinutes(currentDay, 30);
   }
 
-  const FreeSlots = BookedTimes.map((eachClass) => {
+  for (let i = 0; i < BookedTimes.length; i++) {
     if (
-      !AllSlots.includes(utcToZonedTime(eachClass.startDate, currentUser.iana))
+      isWithinInterval(
+        zonedTimeToUtc(BookedTimes[i].startDate, currentUser.iana),
+        {
+          start: scheduleWindowBeginningOfWeek,
+          end: endofDay,
+        }
+      )
     ) {
-      let theShit: string[] = [];
+      AllSlots = AllSlots.filter(
+        (slot) =>
+          !isEqual(
+            slot,
+            zonedTimeToUtc(BookedTimes[i].startDate, currentUser.iana)
+          ) &&
+          !isEqual(
+            slot,
+            zonedTimeToUtc(BookedTimes[i].endDate, currentUser.iana)
+          )
+      );
     }
-  });
+  }
 
-  console.log(FreeSlots);
+  console.log(AllSlots);
 };
