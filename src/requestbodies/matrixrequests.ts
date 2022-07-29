@@ -1,4 +1,4 @@
-import { format, startOfWeek, endOfWeek } from "date-fns";
+import { format, startOfWeek, endOfWeek, addDays } from "date-fns";
 import { utcToZonedTime } from "date-fns-tz";
 import { currentUser } from "../current-user";
 import { currentPayPeriod } from "../current-user";
@@ -9,7 +9,7 @@ export const getBookingsRequestsBody = () => {
 
   const currentDate = utcToZonedTime(currentPayPeriod.startDate, currentUser.iana);
   const startDate = format(startOfWeek(currentDate), "yyyy-MM-dd'T'HH:mm:ss");
-  const endDate = format(endOfWeek(currentDate), "yyyy-MM-dd'T'HH:mm:ss");
+  const endDate = format(addDays(endOfWeek(currentDate), 7), "yyyy-MM-dd'T'HH:mm:ss");
 
   // console.log("Here  is  the current payperiod"  + startDate + endDate);
 

@@ -17,6 +17,16 @@ import {
   compareAsc,
   isEqual,
   isWithinInterval,
+  startOfHour,
+  min,
+  max,
+  getDate,
+  getDay,
+  differenceInHours,
+  isSameDay,
+  startOfMinute,
+  isSaturday,
+  isFriday,
 } from "date-fns";
 import { utcToZonedTime, zonedTimeToUtc, format } from "date-fns-tz";
 const holidays = require("@date/holidays-us");
@@ -77,6 +87,7 @@ const timeInterval = (startTime: string, endTime: string) => {
   );
 };
 
+
 export const GetScheduleFreeTime = async () => {
   // Sets the beginning of the week to Monday after pay period start at 7AM.
   const scheduleWindowBeginningOfWeek = addHours(
@@ -86,54 +97,100 @@ export const GetScheduleFreeTime = async () => {
     ),
     7
   );
-  let scheduleWindowEndOfWeek = endOfWeek(
-    utcToZonedTime(currentPayPeriod.startDate, currentUser.iana)
+  let scheduleWindowEndOfWeek = addDays(
+    addHours(
+      startOfHour(
+        endOfWeek(utcToZonedTime(currentPayPeriod.endDate, currentUser.iana), {
+          weekStartsOn: 5,
+        })
+      ),
+      16.5
+    ),
+    -6
   );
-
-  const endofDay = addHours(scheduleWindowBeginningOfWeek, 12);
 
   const bookings = await getBookingsView();
 
   const BookedTimes = bookings.reservations.map((eachSlot) => {
     return {
-      startDate: eachSlot.startDate,
-      endDate: eachSlot.endDate,
+      startDate: zonedTimeToUtc(eachSlot.startDate, currentUser.iana),
+      endDate: zonedTimeToUtc(eachSlot.endDate, currentUser.iana),
       differenceinTime: timeInterval(eachSlot.endDate, eachSlot.startDate),
     };
   });
 
-  let AllSlots: Date[] = [];
+  let AllSlots = [];
 
   let currentDay = scheduleWindowBeginningOfWeek;
 
-  while (!isEqual(currentDay, endofDay)) {
-    AllSlots.push(currentDay);
+  let endofday = setHours(setMinutes(currentDay, 30), 19);
+
+  let tempArr: Date[] = [];
+
+  while (!isEqual(currentDay, scheduleWindowEndOfWeek)) {
+    if (isEqual(currentDay, endofday)) {
+      AllSlots.push(tempArr);
+      tempArr = [];
+      currentDay = setHours(setMinutes(addDays(currentDay, 1), 0), 7);
+      endofday = addDays(endofday, 1);
+    }
+    if (isSaturday(endofday)) {
+      endofday = addDays(endofday, 2);
+      currentDay = addDays(scheduleWindowBeginningOfWeek, 7);
+
+    }
+
+    tempArr.push(currentDay);
     currentDay = addMinutes(currentDay, 30);
   }
 
-  for (let i = 0; i < BookedTimes.length; i++) {
-    if (
-      isWithinInterval(
-        zonedTimeToUtc(BookedTimes[i].startDate, currentUser.iana),
-        {
-          start: scheduleWindowBeginningOfWeek,
-          end: endofDay,
-        }
-      )
-    ) {
-      AllSlots = AllSlots.filter(
-        (slot) =>
-          !isEqual(
-            slot,
-            zonedTimeToUtc(BookedTimes[i].startDate, currentUser.iana)
-          ) &&
-          !isEqual(
-            slot,
-            zonedTimeToUtc(BookedTimes[i].endDate, currentUser.iana)
-          )
-      );
-    }
-  }
+  let startTime: Date;
+  let endTime: Date;
 
-  console.log(AllSlots);
+  const FreeSlots = AllSlots.map((slot) => {
+    for (let i = 0; i < BookedTimes.length; i++) {
+      if (!isEqual(slot[0], BookedTimes[i].startDate)) {
+        startTime = slot[0];
+      }
+
+      for (let j = 0; j < slot.length; j++) {
+        if (
+          isEqual(slot[j], BookedTimes[i].startDate) &&
+          isSameDay(slot[j], BookedTimes[i].startDate)
+        ) {
+          endTime = slot[j];
+          break;
+        }
+      }
+    }
+
+    return {
+      startDate: startTime,
+      endDate: endTime,
+      totalPlanningBlockTimeInMins: differenceInMinutes(endTime, startTime),
+    };
+  });
+
+    let userPlanObject = await getUserHours(currentUser.defaultCampusHashKey);
+    let totalTimeInMins  = userPlanObject.earnedPlanningTime.planningTimeBalanceMinutes;
+    let totalUsablePlanningTime = totalTimeInMins - userPlanObject.earnedPlanningTime.usedPlanningTimeMinutes;
+
+
+    let planningResBeginTime;
+    let planningResEndTime;
+   for (let x = 0; x < FreeSlots.length; x++){
+    if (totalUsablePlanningTime == 0){
+      break;
+    }
+    for (let y = 0; y < FreeSlots[x].totalPlanningBlockTimeInMins; y += 10){
+      if (totalUsablePlanningTime == 0){
+        break;
+      }
+      planningResBeginTime = FreeSlots[x].startDate;
+      planningResEndTime = addMinutes(planningResBeginTime, y);
+      totalUsablePlanningTime -= y;
+    }
+   } 
+
+
 };
