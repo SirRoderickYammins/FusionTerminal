@@ -87,7 +87,6 @@ const timeInterval = (startTime: string, endTime: string) => {
   );
 };
 
-
 export const GetScheduleFreeTime = async () => {
   // Sets the beginning of the week to Monday after pay period start at 7AM.
   const scheduleWindowBeginningOfWeek = addHours(
@@ -137,9 +136,9 @@ export const GetScheduleFreeTime = async () => {
     if (isSaturday(endofday)) {
       endofday = addDays(endofday, 2);
       currentDay = addDays(scheduleWindowBeginningOfWeek, 7);
-
     }
 
+    Hom;
     tempArr.push(currentDay);
     currentDay = addMinutes(currentDay, 30);
   }
@@ -171,26 +170,16 @@ export const GetScheduleFreeTime = async () => {
     };
   });
 
-    let userPlanObject = await getUserHours(currentUser.defaultCampusHashKey);
-    let totalTimeInMins  = userPlanObject.earnedPlanningTime.planningTimeBalanceMinutes;
-    let totalUsablePlanningTime = totalTimeInMins - userPlanObject.earnedPlanningTime.usedPlanningTimeMinutes;
+  const userPlanObject = await getUserHours(currentUser.defaultCampusHashKey);
+  const totalTimeInMins =
+    userPlanObject.earnedPlanningTime.planningTimeBalanceMinutes;
+  let totalUsablePlanningTime =
+    totalTimeInMins - userPlanObject.earnedPlanningTime.usedPlanningTimeMinutes;
 
+  let planningResBeginTime: Date;
+  let planningResEndTime: Date;
 
-    let planningResBeginTime;
-    let planningResEndTime;
-   for (let x = 0; x < FreeSlots.length; x++){
-    if (totalUsablePlanningTime == 0){
-      break;
-    }
-    for (let y = 0; y < FreeSlots[x].totalPlanningBlockTimeInMins; y += 10){
-      if (totalUsablePlanningTime == 0){
-        break;
-      }
-      planningResBeginTime = FreeSlots[x].startDate;
-      planningResEndTime = addMinutes(planningResBeginTime, y);
-      totalUsablePlanningTime -= y;
-    }
-   } 
-
-
+  while (totalUsablePlanningTime > 0) {
+    FreeSlots.forEach((freeSlot) => {});
+  }
 };
