@@ -6,6 +6,7 @@ import {
   planningTimeMenu,
   planningTimeDisplayDashboard,
   PTOBalanceMenu,
+  noPlanTimeErrorPage,
 } from "./prompts/matrixActions";
 import {
   getBookingsView,
@@ -33,6 +34,15 @@ export const PAGES = {
     }
   },
 
+  noPlanningTime: async () => {
+    console.clear();
+    const res = await noPlanTimeErrorPage();
+    if (res.planErrorSelect == 1){
+      PAGES.matrixActionsList();
+    }
+
+  },
+
   planningTimeMatrix: async () => {
     console.clear();
     const res = await planningTimeMenu();
@@ -50,7 +60,7 @@ export const PAGES = {
       case "autoAddPlanning":
         await GetScheduleFreeTime();
         // PAGES.matrixActionsList();
-        console.log("Planning time added.");
+        PAGES.matrixActionsList(); 
         break;
       case "Return":
         PAGES.matrixActionsList();

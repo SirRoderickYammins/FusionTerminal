@@ -95,3 +95,20 @@ export const PTOBalanceMenu = async (ptoBalance: number) => {
     },
   ]);
 };
+
+export const noPlanTimeErrorPage = async () => {
+  return prompts([
+    {
+      type: "select",
+      name: "planErrorSelect",
+      message: `${kleur.red("You don't have any planning time.")}`,
+      choices: [
+        {
+          title: "Go back",
+          value: 1,
+        }
+      ]
+
+    }
+  ])
+}

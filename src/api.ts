@@ -33,6 +33,8 @@ const holidays = require("@date/holidays-us");
 import { currentPayPeriod, currentUser } from "./current-user";
 import { createReservation } from "./matrix/createReservation";
 import { start } from "repl";
+import { noPlanTimeErrorPage } from "./prompts/matrixActions";
+import { PAGES } from "./pages";
 
 const jar = new CookieJar();
 export const client = wrapper(axios.create({ jar }));
@@ -88,6 +90,16 @@ const timeInterval = (startTime: string, endTime: string) => {
 };
 
 export const GetScheduleFreeTime = async () => {
+  const userPlanObject = await getUserHours(currentUser.defaultCampusHashKey);
+  const totalTimeInMins =
+    userPlanObject.earnedPlanningTime.planningTimeBalanceMinutes;
+  let totalUsablePlanningTime =
+    totalTimeInMins - userPlanObject.earnedPlanningTime.usedPlanningTimeMinutes;
+
+  if (totalUsablePlanningTime == 0) {
+   await PAGES.noPlanningTime(); 
+  }
+
   // Sets the beginning of the week to Monday after pay period start at 7AM.
   const scheduleWindowBeginningOfWeek = addHours(
     addDays(
@@ -138,7 +150,6 @@ export const GetScheduleFreeTime = async () => {
       currentDay = addDays(scheduleWindowBeginningOfWeek, 7);
     }
 
-    Hom;
     tempArr.push(currentDay);
     currentDay = addMinutes(currentDay, 30);
   }
@@ -146,6 +157,7 @@ export const GetScheduleFreeTime = async () => {
   let startTime: Date;
   let endTime: Date;
 
+  console.log("Generating free slot map.");
   const FreeSlots = AllSlots.map((slot) => {
     for (let i = 0; i < BookedTimes.length; i++) {
       if (!isEqual(slot[0], BookedTimes[i].startDate)) {
@@ -170,16 +182,29 @@ export const GetScheduleFreeTime = async () => {
     };
   });
 
-  const userPlanObject = await getUserHours(currentUser.defaultCampusHashKey);
-  const totalTimeInMins =
-    userPlanObject.earnedPlanningTime.planningTimeBalanceMinutes;
-  let totalUsablePlanningTime =
-    totalTimeInMins - userPlanObject.earnedPlanningTime.usedPlanningTimeMinutes;
+  // while (totalUsablePlanningTime > 0) {
+  //   FreeSlots.forEach((freeSlot) => {});
+  // }
 
-  let planningResBeginTime: Date;
-  let planningResEndTime: Date;
+  let i = 0;
+  let usedPlanTime = 0;
 
-  while (totalUsablePlanningTime > 0) {
-    FreeSlots.forEach((freeSlot) => {});
+  if (totalUsablePlanningTime > 0) {
+    for (i; i < FreeSlots.length; i++) {
+      let startTime = FreeSlots[i].startDate;
+
+      // If block uses all available planning time if allowable.
+      if (
+        totalUsablePlanningTime < FreeSlots[i].totalPlanningBlockTimeInMins &&
+        totalUsablePlanningTime != 0
+      ) {
+        let endTime = addMinutes(startTime, totalUsablePlanningTime);
+        totalUsablePlanningTime -= totalUsablePlanningTime;
+        createReservation(formatDate(startTime), formatDate(endTime));
+        console.log("Planning time balance:", totalUsablePlanningTime);
+      }
+
+      // while (totalUsablePlanningTime - usedPlanTime > 0)
+    }
   }
 };
