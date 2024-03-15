@@ -18,7 +18,7 @@ export const getTodaysSchedule = (): Promise<Schedule> => {
   return new Promise((resolve, reject) => {
     axios
       .get(
-        `https://matrix-api.fusionacademy.com/api/TodaysSchedule?=&campusId=50&startTime=${startTime}&endTime=${endTime}`,
+        `URL REMOVED FOR PUBLIC REPO`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -56,7 +56,7 @@ export const setSessionStatus = (session: Session, status: boolean) => {
     };
     client
       .post(
-        "https://matrix.fusionacademy.com/api/Schedule/UpdateSessionStatus",
+        "URL REMOVED FOR PUBLIC REPO",
         body,
         {
           headers: {
@@ -77,7 +77,7 @@ export const setSessionStatus = (session: Session, status: boolean) => {
 export const getCurrentUser = (): Promise<UserInformation> => {
   return new Promise((resolve, reject) => {
     client
-      .get("https://matrix.fusionacademy.com/api/Directory/GetCurrentUser", {
+      .get("URL REMOVED FOR PUBLIC REPO", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -98,7 +98,7 @@ export const getUserHours = (
   return new Promise((resolve, reject) => {
     client
       .get(
-        `https://matrix.fusionacademy.com/api/Schedule/GetCurrentUserHud?=&campusHashKey=${defaultCampusHashKey}`,
+        `URL REMOVED FOR PUBLIC REPO`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -118,7 +118,7 @@ export const getBookingsView = (): Promise<BookingInformation> => {
   return new Promise((resolve, reject) => {
     client
       .post(
-        "https://matrix.fusionacademy.com/api/Schedule/GetBookingsView",
+        "URL REMOVED FOR PUBLIC REPO`,
         getBookingsRequestsBody(),
         {
           headers: {
