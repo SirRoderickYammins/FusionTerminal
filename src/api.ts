@@ -49,12 +49,12 @@ export let accessToken = "";
 export const login = async () => {
   await client
     .post(
-      "https://matrix.fusionacademy.com/Account/Login?ReturnUrl=%2F",
+      "URL REMOVED FOR PUBLIC REPO,
       loginInfo,
       { withCredentials: true }
     )
     .then(() => {
-      const cookies = jar.getCookiesSync("https://matrix.fusionacademy.com");
+      const cookies = jar.getCookiesSync("URL REMOVED FOR PUBLIC REPO);
       accessToken = cookies[0].value;
     })
     .catch((err) => {
