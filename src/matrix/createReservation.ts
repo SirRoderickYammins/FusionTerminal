@@ -23,7 +23,7 @@ export const createReservation = async (startDate: string, endDate: string) => {
 
     client
       .post(
-        "https://matrix.fusionacademy.com/api/Schedule/CreateReservation",
+        "URL REMOVED FOR PUBLIC REPO",
         body,
         {
           headers: {
