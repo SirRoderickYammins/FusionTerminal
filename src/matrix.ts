@@ -139,7 +139,7 @@ export const getBookingsView = (): Promise<BookingInformation> => {
 export const getCurrentPayPeriod = (): Promise<PayPeriod> => {
   return new Promise((resolve, reject) => {
     client
-      .get("https://matrix.fusionacademy.com/api/Schedule/GetPayPeriodByDate", {
+      .get("URL REMOVED FOR PUBLIC REPO", {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
